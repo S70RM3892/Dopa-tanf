@@ -53,7 +53,7 @@
 |---|---|
 | 想起練習＋分散学習が土台 | 10の学習法のうち「有用度：高」はこの2つ（[Dunlosky et al., 2013](https://www.psychologicalscience.org/news/releases/which-study-strategies-make-the-grade.html)）。思い出せた後の繰り返し想起が保持を大きく伸ばす（[Karpicke & Roediger, 2008](https://source.washu.edu/2008/02/practicing-information-retrieval-is-key-to-memory-retention/)） |
 | 紛らわしい4択（同義語は除外） | 誤答が紛らわしい4択は本物の想起を起こし、誤答の選択肢に関する記憶まで強めた（[Little et al., 2012](https://www.psychologicalscience.org/journals/psychological-science/0956797612443370/)） |
-| 間違えたら即解説 | 4択直後のフィードバックで正答が増え、誤答を覚える害が減った（[Butler & Roediger, 2008](https://doi.org/10.3758/MC.36.3.604)）。正解の提示が遅れると効果が消えた（[Grimaldi & Karpicke, 2012](https://learninglab.psych.purdue.edu/downloads/2012/2012_Grimaldi_Karpicke_MC.pdf)） |
+| 間違えたら即解説 | 4択のあとに正解を見せると（直後でも遅らせても）正答が増え、誤答を覚える害が減った（[Butler & Roediger, 2008](https://doi.org/10.3758/MC.36.3.604)）。失敗した想起の恩恵は、正解を学ぶまでに間が空くと消えた（[Grimaldi & Karpicke, 2012](https://learninglab.psych.purdue.edu/downloads/2012/2012_Grimaldi_Karpicke_MC.pdf)） |
 | 新しい語もクイズから | 答えを知らないうちに解こうとして失敗すると、その後の学習が強まった（[Kornell, Hays & Bjork, 2009](https://pubmed.ncbi.nlm.nih.gov/19586265/)） |
 | 正答率85%前後に調整 | 学習が最速になる正答率は約85%（単純な二択課題のモデルでの理論値なので目安として使用）（[Wilson et al., 2019](https://pmc.ncbi.nlm.nih.gov/articles/PMC6831579)） |
 | 試験日に合わせた間隔上限（残り日数の15%） | 最適な間隔は試験までの期間の約20%（数週間先）〜5%（1年先）（[Cepeda et al., 2008](https://www.evullab.org/pdf/CepedaVulRohrerWixtedPashler-PS-2008.pdf)）。分散効果のメタ分析（[Cepeda et al., 2006](https://pubmed.ncbi.nlm.nih.gov/16719566/)） |
