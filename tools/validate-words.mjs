@@ -1,4 +1,5 @@
 // 単語データ検証: node tools/validate-words.mjs [words/xxx.js ...]
+// 1行 = [見出し, 品詞, 意味(日本語のみ), 他の意味, 例文, 例文中の対象語, 例文の訳, 京大ポイント, 型(任意)]
 // 引数なしなら words/*.js を全部検査する。
 import fs from "node:fs";
 import path from "node:path";
@@ -30,9 +31,13 @@ for (const f of files) {
   if (!/^[a-z]+$/.test(tag || "")) err(f, -1, `tag が不正: ${tag}`);
   if (!Array.isArray(rows) || !rows.length) { err(f, -1, "rows が空"); continue; }
   rows.forEach((r, i) => {
-    if (!Array.isArray(r) || r.length !== 8) return err(f, i, `8要素の配列ではない (${Array.isArray(r) ? r.length : typeof r})`);
+    if (!Array.isArray(r) || (r.length !== 8 && r.length !== 9)) return err(f, i, `8〜9要素の配列ではない (${Array.isArray(r) ? r.length : typeof r})`);
     if (r.some((x) => typeof x !== "string")) return err(f, i, "全要素が文字列ではない");
-    const [w, pos, ja, more, ex, hit, exJa, note] = r;
+    const [w, pos, ja, more, ex, hit, exJa, note, pat = ""] = r;
+    // 4択の選択肢に答えが漏れないよう、意味(ja)に英語を入れない。A/B/O/C/S/V の記号だけは可。
+    const latin = ja.replace(/(^|[^A-Za-z])[ABOCSV](?=[^A-Za-z]|$)/g, "$1").match(/[A-Za-z]+/);
+    if (latin) err(f, i, `${w}: ja に英語「${latin[0]}」が入っている（答えが選択肢に漏れる）。構文は9番目の「型」へ`);
+    if (pat.length > 40) err(f, i, `${w}: 型(pat) が長すぎ (${pat.length}字 > 40)`);
     if (!w.trim()) err(f, i, "w が空");
     for (const p of pos.split("・")) if (!POS.has(p)) err(f, i, `${w}: pos「${pos}」に未知の品詞 ${p}`);
     if (!ja.trim()) err(f, i, `${w}: ja が空`);
