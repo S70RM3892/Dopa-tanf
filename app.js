@@ -349,7 +349,24 @@ function lastBedtime(now = Date.now()) {
   const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), Math.floor(b / 60), b % 60).getTime();
   return t <= now ? t : t - DAY;
 }
-function applyLook() { document.documentElement.dataset.mode = isNight() ? "night" : "day"; }
+function applyLook() {
+  const night = isNight();
+  document.documentElement.dataset.mode = night ? "night" : "day";
+  // GitHub Pages 版のアドレスバー・ステータスバーの色も減光期に合わせる（アーティファクト版には meta がないので何もしない）
+  for (const m of document.querySelectorAll('meta[name="theme-color"]')) {
+    if (!m.dataset.day) m.dataset.day = m.content;
+    m.content = night ? "#130A05" : m.dataset.day;
+  }
+}
+// iPhone/iPad の Safari で直接開いていると、7日間開かない間に記録が消されることがある（ホーム画面のアプリは対象外）
+const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const STANDALONE = (() => { try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; } catch { return false; } })();
+const HINT_KEY = "dopa-tanf:hint-ios";
+function installHint() {
+  if (!IOS || STANDALONE || window.claude) return "";
+  try { if (localStorage.getItem(HINT_KEY)) return ""; } catch {}
+  return `<div class="note install"><p><b>ホーム画面に追加して使え。</b>Safari で開いたままだと、7日間開かなかったときに記録が消されることがある。共有ボタン →「ホーム画面に追加」。</p><button class="textbtn" data-act="hideHint">閉じる</button></div>`;
+}
 
 /* ================= scheduler & memory model ================= */
 const LEARN = [1 * MIN, 10 * MIN], RELEARN = [10 * MIN];
@@ -1066,6 +1083,7 @@ function renderNote() {
     <div class="last"><span class="lbl">累積 DA</span><b class="mono" style="font-size:17px;font-weight:800">${fmtNum(state.da)}</b></div>
     <div class="num last"><span class="lbl">実験継続</span><b>${liveStreak()} 日</b></div>
   </div>
+  ${installHint()}
 
   <section class="sec">
     <div class="sech"><h2>いま思い出せる見込み</h2><span class="lbl">ΣR ・ 推定</span></div>
@@ -1331,7 +1349,7 @@ function renderConfig() {
   </section>
   <section class="sec form">
     <div class="sech"><h2>バックアップ</h2></div>
-    <p class="small muted">${Store.ref ? "claude.ai のアカウントに自動で同期している。念のための控えも取れる。" : "記録はこのブラウザだけに保存されている。ブラウザのデータを消すと消える。定期的に書き出せ。"}</p>
+    <p class="small muted">${Store.ref ? "claude.ai のアカウントに自動で同期している。念のための控えも取れる。" : `記録はこの端末のブラウザだけに保存されている。ブラウザのデータを消すと消える。定期的に書き出せ。${IOS && !STANDALONE ? "iPhone/iPad の Safari では、7日間開かないと記録が消されることがある。共有ボタン →「ホーム画面に追加」から使え。" : ""}`}</p>
     <div class="btnrow"><button class="btn" id="expBtn">書き出す</button><button class="btn" id="copyBtn" hidden>コピー</button></div>
     <textarea id="expText" readonly hidden aria-label="バックアップ"></textarea>
     <textarea id="restText" placeholder="書き出したJSONを貼り付けて復元" aria-label="復元するJSON"></textarea>
@@ -1496,6 +1514,7 @@ document.addEventListener("click", (e) => {
   else if (act === "again") { closeTrial(); startBlock("main"); }
   else if (act === "home") closeTrial();
   else if (act === "claim") claimSleep();
+  else if (act === "hideHint") { try { localStorage.setItem(HINT_KEY, "1"); } catch {} renderNote(); }
   else if (act === "closeSheet") closeSheet();
   else if (act === "dueNow") { const c = state.cards[a.dataset.id]; if (c) { c.due = c.st === 2 ? dayStart() - 1 : Date.now(); Store.save(); toast("次のブロックで出す。"); closeSheet(); renderView(); } }
   else if (act === "learnNow") { state.prio = [a.dataset.id, ...state.prio.filter((x) => x !== a.dataset.id)]; Store.save(); toast("次のブロックで出会う。"); closeSheet(); renderView(); }

@@ -85,7 +85,29 @@ node tools/validate-words.mjs
 
 ## 使い方
 
-- ローカル: `index.html` をブラウザで開く。
-- スマホ: GitHub の Settings → Pages で公開し、そのURLをホーム画面に追加。
-- 記録はブラウザの localStorage に保存（claude.ai のアーティファクト版はアカウントに同期）。「条件 → バックアップ」で控えを取れ。
-- 試験日の初期値は 2027-02-25。**募集要項・受験票の日付に必ず直すこと。**
+### GitHub Pages で公開する（スマホで使う本命）
+
+1. 初回だけ、リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にする。
+2. 既定ブランチに push すると `.github/workflows/pages.yml` が動く。
+   - 単語データの検証（`tools/validate-words.mjs`）とサイト構成の検証（`tools/check-site.mjs`）を通ったときだけ公開する。
+   - 手動で動かすときは Actions タブ →「GitHub Pages」→「Run workflow」。
+3. 公開先は `https://s70rm3892.github.io/Dopa-tanf/`。
+
+### ホーム画面に追加
+
+- **iPhone/iPad**: Safari で開き、共有ボタン →「ホーム画面に追加」。
+  - Safari で開いたままだと、7日間開かなかったときに記録が消されることがある。ホーム画面のアプリはこの対象外（[WebKit](https://webkit.org/tracking-prevention/)）。
+  - Safari で開いている間は、ノート画面にもこの案内が出る。
+- **Android**: Chrome のメニュー →「ホーム画面に追加」または「アプリをインストール」。
+- 一度開けばオフラインでも動く。電波のない電車でも続けられる。
+  - オンラインのときは毎回最新版を取りにいく（`sw.js`）。
+
+### その他
+
+- **ローカル**: `index.html` をブラウザで開くだけで動く（オフライン機能はなし）。
+- **記録の保存場所**: ブラウザの localStorage。
+  - claude.ai のアーティファクト版はアカウントに同期する。
+  - GitHub Pages 版は端末ごとに別。
+  - 「条件 → バックアップ」で書き出し・復元して、控えを取れ。
+- **試験日**: 初期値は 2027-02-25。**募集要項・受験票の日付に必ず直すこと。**
+- **単語ファイルを足したとき**: `index.html` の `<script>` と `sw.js` の `CORE` の両方に足し、`node tools/check-site.mjs` を通す。

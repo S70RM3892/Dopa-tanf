@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#E5ECDD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E2C57" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ドーパミン単語">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 <!--page-->
@@ -269,6 +278,9 @@ a{color:var(--blue)}
 .ex mark{background:linear-gradient(transparent 55%,var(--da-soft) 55%);color:inherit;font-weight:600}
 .exja{font-size:14px;color:var(--ink-2);line-height:1.7}
 .note{font-size:13.5px;line-height:1.65;border-left:3px solid var(--red);padding:2px 0 2px 10px}
+.note.install{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;margin-block:14px 4px}
+.note.install p{margin:0}
+.note.install .textbtn{flex:none;font-size:12px}
 .yours{font-size:13px;color:var(--ink-2)}
 .yours s{color:var(--red)}
 .autobar{height:3px;background:var(--rule-2);overflow:hidden}
@@ -441,5 +453,18 @@ textarea{width:100%;min-height:96px;border:1.5px solid var(--rule);background:va
 <script src="words/synonyms.js"></script>
 <script src="app.js"></script>
 <!--/page-->
+<script>
+// GitHub Pages などで開いたときだけ: オフラインで動くようにし、記録を消されにくくする（claude.ai のアーティファクトでは何もしない）
+if (!window.claude && "serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+}
+if (!window.claude && navigator.storage && navigator.storage.persist) {
+  addEventListener("click", function once(e) {
+    if (!e.target.closest || !e.target.closest(".rec")) return;
+    removeEventListener("click", once, true);
+    navigator.storage.persist().catch(function () {});
+  }, true);
+}
+</script>
 </body>
 </html>
